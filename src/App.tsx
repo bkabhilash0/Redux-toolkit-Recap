@@ -1,56 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { useEffect } from "react";
+import "./App.css";
+import {
+  decrement,
+  increment,
+  incrementByAmount,
+} from "./store/reducers/counter";
+import { fetchAllTodos } from "./store/reducers/todos";
+import { useAppDispatch, useAppSelector } from "./store/store";
 
 function App() {
+  const { value: counterValue } = useAppSelector((state) => state.counter);
+  const { todos } = useAppSelector((state) => state.todos);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAllTodos());
+  }, [dispatch]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <div className="counter">
+        <h1>Counter = {counterValue}</h1>
+        <button onClick={() => dispatch(increment())}>Increment</button>
+        <button onClick={() => dispatch(decrement())}>Decrement</button>
+        <button onClick={() => dispatch(incrementByAmount(10))}>
+          Increment By Amount
+        </button>
+      </div>
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.title}>{todo.title}</li>
+        ))}
+      </ul>
     </div>
   );
 }
